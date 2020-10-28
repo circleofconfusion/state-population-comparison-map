@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <link rel="stylesheet" href="index.css">
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+  <script src="https://unpkg.com/topojson-client@3"></script>
+</head>
+<body>
+  <main>
+    <div id="map">
+      <svg>
+        <defs>
+          <filter id="inset-shadow" width="200%" height="200%">
+            <!-- Shadow Offset -->
+            <feOffset dx="0" dy="0" />
+            <!-- Shadow Blur -->
+            <feGaussianBlur stdDeviation="3"  result="offset-blur" />
+            <!-- Invert the drop shadow to create an inner shadow -->
+            <feComposite operator="out" in="SourceGraphic" result="inverse" />
+            <!-- Color & Opacity -->
+            <feFlood flood-color="black" flood-opacity="1" result="color" />
+            <!-- Clip color inside shadow -->
+            <feComposite operator="in" in="color" in2="inverse" result="shadow" />
+            <!-- Shadow Opacity -->
+            <feComponentTransfer in="shadow" result="shadow">
+              <feFuncA type="linear" slope="1" />
+            </feComponentTransfer>
+            <!-- Put shadow over original object -->
+            <!--<feComposite operator="over" in="shadow" in2="SourceGraphic"/>-->
+          </filter>
+        </defs>
+      </svg>
+    </div>
+    <div id="sidebar">
+      <select name="year" id="year">
+        <option>1790</option>
+        <option>1800</option>
+        <option>1810</option>
+        <option>1820</option>
+        <option>1830</option>
+        <option>1840</option>
+        <option>1850</option>
+        <option>1860</option>
+        <option>1870</option>
+        <option>1880</option>
+        <option>1890</option>
+        <option>1900</option>
+        <option>1910</option>
+        <option>1920</option>
+        <option>1930</option>
+        <option>1940</option>
+        <option>1950</option>
+        <option>1960</option>
+        <option>1970</option>
+        <option>1980</option>
+        <option>1990</option>
+        <option>2000</option>
+        <option>2010</option>
+      </select>
+      <table id="stats"></table>
+    </div>
+  </main>
+</body>
+<script src="index.js"></script>
+</html>

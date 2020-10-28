@@ -1,0 +1,43 @@
+path.state {
+  fill: #fff;
+  stroke: #000;
+  stroke-width: 1;
+}
+
+path.state:hover {
+  filter: url(#inset-shadow);
+}
+
+path.state.largest {
+  fill: #5e945e;
+}
+
+path.state.small {
+  fill: #ceba63;
+}
+
+tr.largest {
+  background-color: #5e945e;
+  color: #fff;
+}
+
+tr.small {
+  background-color: #ceba63;
+}
+
+main {
+  display: flex;
+}
+
+#map {
+  flex: 1;
+  position: relative;
+}
+
+#sidebar {
+  flex: 0 300px;
+}
+
+#sidebar > table {
+  width: 100%;
+}
