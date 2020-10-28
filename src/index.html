@@ -18,7 +18,7 @@
             <!-- Shadow Blur -->
             <feGaussianBlur stdDeviation="2"  result="offset-blur" />
             <!-- Invert the drop shadow to create an inner shadow -->
-            <feComposite operator="out" in="SourceAlpha" result="inverse" />
+            <feComposite operator="out" in="SourceGraphic" result="inverse" />
             <!-- Color & Opacity -->
             <feFlood flood-color="black" flood-opacity="1" result="color" />
             <!-- Clip color inside shadow -->
@@ -31,6 +31,10 @@
             <!--<feComposite operator="over" in="shadow" in2="SourceGraphic"/>-->
           </filter>
         </defs>
+        <g id="alaska" transform="translate(-180, -70)"></g>
+        <g id="hawaii" transform="translate(-300, 50)"></g>
+        <g id="puerto-rico" transform="translate(-200, 50)"></g>
+        <g id="lower-48" transform="translate(120, 0)"></g>
       </svg>
     </div>
     <div id="sidebar">

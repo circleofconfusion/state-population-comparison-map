@@ -5,12 +5,38 @@ const svg = d3.select('#map > svg')
   .attr('viewBox', `0 0 ${width} ${height}`)
   .attr('preserveAspectRatio', 'xMidYMin meet');
 
-const projection = d3.geoAlbers()
-  .scale(400)
-  .center([15, 38]);
+const lower48Map = svg.select('#lower-48');
+const alaskaMap = svg.select('#alaska');
+const hawaiiMap = svg.select('#hawaii');
+const puertoRicoMap = svg.select('#puerto-rico');
 
-const geoPathGenerator = d3.geoPath()
-  .projection(projection);
+const lower48Projection = d3.geoAlbers()
+  .scale(600)
+  .center([15, 30]);
+
+const lower48PathGenerator = d3.geoPath()
+  .projection(lower48Projection);
+
+const alaskaProjection = d3.geoAlbers()
+  .scale(400)
+  .center([-10, 54]);
+
+const alaskaPathGenerator = d3.geoPath()
+  .projection(alaskaProjection);
+
+const hawaiiProjection = d3.geoAlbers()
+  .scale(300)
+  .center([-35, 27]);
+
+const hawaiiPathGenerator = d3.geoPath()
+  .projection(hawaiiProjection);
+
+const prProjection = d3.geoAlbers()
+  .scale(600)
+  .center([40, 5]);
+
+const prPathGenerator = d3.geoPath()
+  .projection(prProjection);
 
 render(year.value);
 
@@ -31,49 +57,42 @@ async function render(year) {
 
   // load the map
   const map = await d3.json(`us_state_${fileYear}.topojson`);
-  const states = topojson.feature(map, map.objects[`us_state_${fileYear}`])
+  const allStates = topojson.feature(map, map.objects[`us_state_${fileYear}`])
     .features
     .sort((a, b) => {
       if (+a.properties[`pop_${year}`] > +b.properties[`pop_${year}`]) return 1;
       else if (+a.properties[`pop_${year}`] < +b.properties[`pop_${year}`]) return -1;
       else return 0;
     });
-
-  // TODO: break this out into another function
-  const largestState = states[states.length - 1];
-  const smallestStates = [];
-
-  let smallStatePopTot = 0;
-  for (let i = 0; i < states.length; ++i) {
-    if (/Territory|District|Puerto Rico/.test(states[i].properties.name)) {
-      continue;
-    } else if (+states[i].properties[`pop_${year}`] + smallStatePopTot <= +largestState.properties[`pop_${year}`]) {
-      smallestStates.push(states[i]);
-      smallStatePopTot += +states[i].properties[`pop_${year}`];
-    } else {
-      break;
-    }
-  }
+  const lower48States = allStates.filter(s => {
+    const nonContinentalStates = [ 'Alaska', 'Alaska Territory', 'Hawaii', 'Hawaii Territory', 'Puerto Rico' ];
+    return !nonContinentalStates.includes(s.properties.name);
+  });
+  const alaska = allStates.filter(s => ['Alaska', 'Alaska Territory'].includes(s.properties.name));
+  const hawaii = allStates.filter(s => ['Hawaii', 'Hawaii Territory'].includes(s.properties.name));
+  const puertoRico = allStates.filter(s => ['Puerto Rico'].includes(s.properties.name));
+  const { largestState, smallestStates } = largestSmallestStates(allStates, year);
   
-  const statePaths = svg.selectAll('path.state')
-    .data(states)
+  // create the map of the lower 48
+  lower48Map.selectAll('path.state')
+    .data(lower48States)
     .join(
       enter => {
         enter
         .insert('path')
         .attr('class', 'state')
-        .classed('small', d => smallestStates.includes(d))
-        .classed('largest', d => d === largestState)
-        .attr('d', geoPathGenerator)
+        .classed('small', d => smallestStates.includes(d.properties.name))
+        .classed('largest', d => d.properties.name === largestState)
+        .attr('d', lower48PathGenerator)
         .append('title')
         .text(d => d.properties.name);
       },
       update => {
         update
         .attr('class', 'state')
-        .classed('small', d => smallestStates.includes(d))
-        .classed('largest', d => d === largestState)
-        .attr('d', geoPathGenerator)
+        .classed('small', d => smallestStates.includes(d.properties.name))
+        .classed('largest', d => d.properties.name === largestState)
+        .attr('d', lower48PathGenerator)
         .append('title')
         .text(d => d.properties.name);
       },
@@ -82,15 +101,102 @@ async function render(year) {
       }
     );
 
-  const statsTableRows = d3.select('#stats')
+  if(alaska) {
+    alaskaMap.selectAll('path.state')
+    .data(alaska)
+    .join(
+      enter => {
+        enter
+        .insert('path')
+        .attr('class', 'state')
+        .classed('small', d => smallestStates.includes(d.properties.name))
+        .classed('largest', d => d.properties.name === largestState)
+        .attr('d', alaskaPathGenerator)
+        .append('title')
+        .text(d => d.properties.name);
+      },
+      update => {
+        update
+        .attr('class', 'state')
+        .classed('small', d => smallestStates.includes(d.properties.name))
+        .classed('largest', d => d.properties.name === largestState)
+        .attr('d', alaskaPathGenerator)
+        .append('title')
+        .text(d => d.properties.name);
+      },
+      exit => {
+        exit.remove();
+      }
+    );
+  }
+
+  if(hawaii) {
+    hawaiiMap.selectAll('path.state')
+    .data(hawaii)
+    .join(
+      enter => {
+        enter
+        .insert('path')
+        .attr('class', 'state')
+        .classed('small', d => smallestStates.includes(d.properties.name))
+        .classed('largest', d => d.properties.name === largestState)
+        .attr('d', hawaiiPathGenerator)
+        .append('title')
+        .text(d => d.properties.name);
+      },
+      update => {
+        update
+        .attr('class', 'state')
+        .classed('small', d => smallestStates.includes(d.properties.name))
+        .classed('largest', d => d.properties.name === largestState)
+        .attr('d', hawaiiPathGenerator)
+        .append('title')
+        .text(d => d.properties.name);
+      },
+      exit => {
+        exit.remove();
+      }
+    );
+  }
+
+  if(puertoRico) {
+    puertoRicoMap.selectAll('path.state')
+    .data(puertoRico)
+    .join(
+      enter => {
+        enter
+        .insert('path')
+        .attr('class', 'state')
+        .classed('small', d => smallestStates.includes(d.properties.name))
+        .classed('largest', d => d.properties.name === largestState)
+        .attr('d', prPathGenerator)
+        .append('title')
+        .text(d => d.properties.name);
+      },
+      update => {
+        update
+        .attr('class', 'state')
+        .classed('small', d => smallestStates.includes(d.properties.name))
+        .classed('largest', d => d.properties.name === largestState)
+        .attr('d', prPathGenerator)
+        .append('title')
+        .text(d => d.properties.name);
+      },
+      exit => {
+        exit.remove();
+      }
+    );
+  }
+  // Create the state populations table
+  d3.select('#stats')
     .selectAll('tr')
-    .data(states)
+    .data(allStates)
     .join(
       enter => {
         const newRow = enter
         .append('tr')
-        .classed('small', d => smallestStates.includes(d))
-        .classed('largest', d => d === largestState);
+        .classed('small', d => smallestStates.includes(d.properties.name))
+        .classed('largest', d => d.properties.name === largestState);
 
         newRow
         .append('td')
@@ -102,8 +208,8 @@ async function render(year) {
       },
       update => {
         const updatingRow = update
-        .classed('small', d => smallestStates.includes(d))
-        .classed('largest', d => d === largestState);
+        .classed('small', d => smallestStates.includes(d.properties.name))
+        .classed('largest', d => d.properties.name === largestState);
         
         updatingRow
         .selectAll('td')
@@ -114,4 +220,23 @@ async function render(year) {
         exit.remove();
       }
     );
+}
+
+function largestSmallestStates(allStates, year) {
+  const largestState = allStates[allStates.length - 1];
+  const smallestStates = [];
+
+  let smallStatePopTot = 0;
+  for (let i = 0; i < allStates.length; ++i) {
+    if (/Territory|District|Puerto Rico/.test(allStates[i].properties.name)) {
+      continue;
+    } else if (+allStates[i].properties[`pop_${year}`] + smallStatePopTot <= +largestState.properties[`pop_${year}`]) {
+      smallestStates.push(allStates[i].properties.name);
+      smallStatePopTot += +allStates[i].properties[`pop_${year}`];
+    } else {
+      break;
+    }
+  }
+
+  return { largestState: largestState.properties.name, smallestStates };
 }
