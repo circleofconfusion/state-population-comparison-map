@@ -21,13 +21,16 @@ yearSelect.addEventListener('change',() => {
 });
 
 async function render(year) {
+  // special rules for maps covering multiple decades
   let fileYear = year;
   if (year >= 1920 && year <= 1950) {
     fileYear = '1920-1950'; 
   } else if (year >= 1960 && year <= 2010) {
     fileYear = '1960-2010'
   }
-  const map = await d3.json(`us_state_${fileYear}.topojson`)
+
+  // load the map
+  const map = await d3.json(`us_state_${fileYear}.topojson`);
   const states = topojson.feature(map, map.objects[`us_state_${fileYear}`])
     .features
     .sort((a, b) => {
@@ -35,6 +38,8 @@ async function render(year) {
       else if (+a.properties[`pop_${year}`] < +b.properties[`pop_${year}`]) return -1;
       else return 0;
     });
+
+  // TODO: break this out into another function
   const largestState = states[states.length - 1];
   const smallestStates = [];
 
@@ -52,28 +57,61 @@ async function render(year) {
   
   const statePaths = svg.selectAll('path.state')
     .data(states)
-    .enter()
-    .insert('path')
-    .attr('class', 'state')
-    .classed('small', d => smallestStates.includes(d))
-    .classed('largest', d => d === largestState)
-    .attr('d', geoPathGenerator)
-    .append('title')
-    .text(d => d.properties.name);
+    .join(
+      enter => {
+        enter
+        .insert('path')
+        .attr('class', 'state')
+        .classed('small', d => smallestStates.includes(d))
+        .classed('largest', d => d === largestState)
+        .attr('d', geoPathGenerator)
+        .append('title')
+        .text(d => d.properties.name);
+      },
+      update => {
+        update
+        .attr('class', 'state')
+        .classed('small', d => smallestStates.includes(d))
+        .classed('largest', d => d === largestState)
+        .attr('d', geoPathGenerator)
+        .append('title')
+        .text(d => d.properties.name);
+      },
+      exit => {
+        exit.remove();
+      }
+    );
 
   const statsTableRows = d3.select('#stats')
     .selectAll('tr')
     .data(states)
-    .enter()
-    .append('tr')
-    .classed('small', d => smallestStates.includes(d))
-    .classed('largest', d => d === largestState);
+    .join(
+      enter => {
+        const newRow = enter
+        .append('tr')
+        .classed('small', d => smallestStates.includes(d))
+        .classed('largest', d => d === largestState);
 
-  statsTableRows
-    .append('td')
-    .text(d => d.properties.name);
-  
-  statsTableRows
-    .append('td')
-    .text(d => d.properties[`pop_${year}`] || '-');
+        newRow
+        .append('td')
+        .text(d => d.properties.name);
+
+        newRow
+        .append('td')
+        .text(d => d.properties[`pop_${year}`] || '-');
+      },
+      update => {
+        const updatingRow = update
+        .classed('small', d => smallestStates.includes(d))
+        .classed('largest', d => d === largestState);
+        
+        updatingRow
+        .selectAll('td')
+        .data(d => [d.properties.name, d.properties[`pop_${year}`]])
+        .text(d => d);
+      },
+      exit => {
+        exit.remove();
+      }
+    );
 }

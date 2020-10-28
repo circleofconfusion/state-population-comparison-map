@@ -16,9 +16,9 @@
             <!-- Shadow Offset -->
             <feOffset dx="0" dy="0" />
             <!-- Shadow Blur -->
-            <feGaussianBlur stdDeviation="3"  result="offset-blur" />
+            <feGaussianBlur stdDeviation="2"  result="offset-blur" />
             <!-- Invert the drop shadow to create an inner shadow -->
-            <feComposite operator="out" in="SourceGraphic" result="inverse" />
+            <feComposite operator="out" in="SourceAlpha" result="inverse" />
             <!-- Color & Opacity -->
             <feFlood flood-color="black" flood-opacity="1" result="color" />
             <!-- Clip color inside shadow -->
