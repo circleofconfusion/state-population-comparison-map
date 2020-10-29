@@ -1,5 +1,5 @@
 const width = 700;
-const height = 600;
+const height = 350;
 
 const svg = d3.select('#map > svg')
   .attr('viewBox', `0 0 ${width} ${height}`)
@@ -133,6 +133,8 @@ async function render(year) {
     );
   } else {
     lower48Map.attr('transform', 'translate(0,0)');
+
+    alaskaMap.selectAll('path.state').remove();
   }
 
   if(hawaii.length > 0) {
@@ -157,11 +159,10 @@ async function render(year) {
         .attr('d', hawaiiPathGenerator)
         .append('title')
         .text(d => d.properties.name);
-      },
-      exit => {
-        exit.remove();
       }
     );
+  } else {
+    hawaiiMap.selectAll('path.state').remove();
   }
 
   if(puertoRico.length > 0) {
@@ -186,12 +187,12 @@ async function render(year) {
         .attr('d', prPathGenerator)
         .append('title')
         .text(d => d.properties.name);
-      },
-      exit => {
-        exit.remove();
       }
     );
+  } else {
+    puertoRicoMap.selectAll('path.state').remove();
   }
+
   // Create the state populations table
   d3.select('#stats')
     .selectAll('tr')
@@ -209,7 +210,7 @@ async function render(year) {
 
         newRow
         .append('td')
-        .text(d => d.properties[`pop_${year}`] || '-');
+        .text(d => Number(d.properties[`pop_${year}`]).toLocaleString() || '-');
       },
       update => {
         const updatingRow = update
@@ -217,9 +218,12 @@ async function render(year) {
         .classed('largest', d => d.properties.name === largestState);
         
         updatingRow
-        .selectAll('td')
-        .data(d => [d.properties.name, d.properties[`pop_${year}`]])
-        .text(d => d);
+        .select('td:first-child')
+        .text(d => d.properties.name);
+
+        updatingRow
+        .select('td:last-child')
+        .text(d => Number(d.properties[`pop_${year}`]).toLocaleString());
       },
       exit => {
         exit.remove();

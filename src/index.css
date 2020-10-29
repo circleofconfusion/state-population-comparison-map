@@ -25,6 +25,10 @@ tr.small {
   background-color: #ceba63;
 }
 
+tr > td:last-child {
+  text-align: right;
+}
+
 main {
   display: flex;
 }
@@ -38,6 +42,6 @@ main {
   flex: 0 300px;
 }
 
-#sidebar > table {
+#sidebar table {
   width: 100%;
 }
