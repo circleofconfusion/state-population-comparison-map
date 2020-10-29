@@ -75,7 +75,7 @@ async function render(year) {
   
   // create the map of the lower 48
   lower48Map.selectAll('path.state')
-    .data(lower48States, d => d.name)
+    .data(lower48States, d => d.properties.GISJOIN)
     .join(
       enter => {
         enter
