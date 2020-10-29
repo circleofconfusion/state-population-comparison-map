@@ -75,7 +75,7 @@ async function render(year) {
   
   // create the map of the lower 48
   lower48Map.selectAll('path.state')
-    .data(lower48States)
+    .data(lower48States, d => d.name)
     .join(
       enter => {
         enter
@@ -135,7 +135,7 @@ async function render(year) {
     lower48Map.attr('transform', 'translate(0,0)');
   }
 
-  if(hawaii) {
+  if(hawaii.length > 0) {
     hawaiiMap.selectAll('path.state')
     .data(hawaii)
     .join(
@@ -164,7 +164,7 @@ async function render(year) {
     );
   }
 
-  if(puertoRico) {
+  if(puertoRico.length > 0) {
     puertoRicoMap.selectAll('path.state')
     .data(puertoRico)
     .join(
