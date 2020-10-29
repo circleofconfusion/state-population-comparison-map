@@ -1,3 +1,8 @@
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
 path.state {
   fill: #fff;
   stroke: #000;
@@ -30,16 +35,23 @@ tr > td:last-child {
 }
 
 main {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  grid-template-rows: minmax(0, 100vh);
+}
+
+#map,
+#sidebar {
+  overflow: hidden;
 }
 
 #map {
-  flex: 1;
   position: relative;
 }
 
-#sidebar {
-  flex: 0 300px;
+#sidebar-scroll {
+  overflow: auto;
+  height: calc(100% - 2em);
 }
 
 #sidebar table {
