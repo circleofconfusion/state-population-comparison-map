@@ -101,7 +101,10 @@ async function render(year) {
       }
     );
 
-  if(alaska) {
+  if(alaska.length > 0) {
+    // push the continental US over if Alaska is present
+    lower48Map.attr('transform', 'translate(120, 0)');
+
     alaskaMap.selectAll('path.state')
     .data(alaska)
     .join(
@@ -128,6 +131,8 @@ async function render(year) {
         exit.remove();
       }
     );
+  } else {
+    lower48Map.attr('transform', 'translate(0,0)');
   }
 
   if(hawaii) {
