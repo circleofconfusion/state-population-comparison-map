@@ -18,22 +18,22 @@ const lower48PathGenerator = d3.geoPath()
   .projection(lower48Projection);
 
 const alaskaProjection = d3.geoAlbers()
-  .scale(400)
-  .center([-10, 54]);
+  .scale(500)
+  .center([-20, 60]);
 
 const alaskaPathGenerator = d3.geoPath()
   .projection(alaskaProjection);
 
 const hawaiiProjection = d3.geoAlbers()
-  .scale(300)
-  .center([-35, 27]);
+  .scale(600)
+  .center([-50, 25]);
 
 const hawaiiPathGenerator = d3.geoPath()
   .projection(hawaiiProjection);
 
 const prProjection = d3.geoAlbers()
   .scale(600)
-  .center([40, 5]);
+  .center([40, 10]);
 
 const prPathGenerator = d3.geoPath()
   .projection(prProjection);
