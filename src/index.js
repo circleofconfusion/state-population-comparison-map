@@ -84,6 +84,7 @@ async function render(year) {
         .classed('small', d => smallestStates.includes(d.properties.name))
         .classed('largest', d => d.properties.name === largestState)
         .attr('d', lower48PathGenerator)
+        .on('click', (e, d) => console.log(d.properties.name, d.properties[`pop_${year}`]))
         .append('title')
         .text(d => d.properties.name);
       },
@@ -93,11 +94,13 @@ async function render(year) {
         .classed('small', d => smallestStates.includes(d.properties.name))
         .classed('largest', d => d.properties.name === largestState)
         .attr('d', lower48PathGenerator)
+        .on('click', null)
+        .on('click', (e, d) => console.log(d.properties.name, d.properties[`pop_${year}`]))
         .append('title')
         .text(d => d.properties.name);
       },
       exit => {
-        exit.remove();
+        exit.on('click', null).remove();
       }
     );
 
@@ -115,6 +118,7 @@ async function render(year) {
         .classed('small', d => smallestStates.includes(d.properties.name))
         .classed('largest', d => d.properties.name === largestState)
         .attr('d', alaskaPathGenerator)
+        .on('click', (e, d) => console.log(d.properties.name, d.properties[`pop_${year}`]))
         .append('title')
         .text(d => d.properties.name);
       },
@@ -124,16 +128,14 @@ async function render(year) {
         .classed('small', d => smallestStates.includes(d.properties.name))
         .classed('largest', d => d.properties.name === largestState)
         .attr('d', alaskaPathGenerator)
+        .on('click', null)
+        .on('click', (e, d) => console.log(d.properties.name, d.properties[`pop_${year}`]))
         .append('title')
         .text(d => d.properties.name);
-      },
-      exit => {
-        exit.remove();
       }
     );
   } else {
     lower48Map.attr('transform', 'translate(0,0)');
-
     alaskaMap.selectAll('path.state').remove();
   }
 
@@ -148,6 +150,7 @@ async function render(year) {
         .classed('small', d => smallestStates.includes(d.properties.name))
         .classed('largest', d => d.properties.name === largestState)
         .attr('d', hawaiiPathGenerator)
+        .on('click', (e, d) => console.log(d.properties.name, d.properties[`pop_${year}`]))
         .append('title')
         .text(d => d.properties.name);
       },
@@ -157,12 +160,14 @@ async function render(year) {
         .classed('small', d => smallestStates.includes(d.properties.name))
         .classed('largest', d => d.properties.name === largestState)
         .attr('d', hawaiiPathGenerator)
+        .on('click', null)
+        .on('click', (e, d) => console.log(d.properties.name, d.properties[`pop_${year}`]))
         .append('title')
         .text(d => d.properties.name);
       }
     );
   } else {
-    hawaiiMap.selectAll('path.state').remove();
+    hawaiiMap.selectAll('path.state').on('click', null).remove();
   }
 
   if(puertoRico.length > 0) {
@@ -176,6 +181,7 @@ async function render(year) {
         .classed('small', d => smallestStates.includes(d.properties.name))
         .classed('largest', d => d.properties.name === largestState)
         .attr('d', prPathGenerator)
+        .on('click', (e, d) => console.log(d.properties.name, d.properties[`pop_${year}`]))
         .append('title')
         .text(d => d.properties.name);
       },
@@ -185,12 +191,14 @@ async function render(year) {
         .classed('small', d => smallestStates.includes(d.properties.name))
         .classed('largest', d => d.properties.name === largestState)
         .attr('d', prPathGenerator)
+        .on('click', null)
+        .on('click', (e, d) => console.log(d.properties.name, d.properties[`pop_${year}`]))
         .append('title')
         .text(d => d.properties.name);
       }
     );
   } else {
-    puertoRicoMap.selectAll('path.state').remove();
+    puertoRicoMap.selectAll('path.state').on('click', null).remove();
   }
 
   // Create the state populations table
