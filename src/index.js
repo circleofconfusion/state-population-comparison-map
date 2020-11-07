@@ -5,6 +5,7 @@ const svg = d3.select('#map > svg')
   .attr('viewBox', `0 0 ${width} ${height}`)
   .attr('preserveAspectRatio', 'xMidYMin meet');
 
+const land = svg.select('#land');
 const lower48Map = svg.select('#lower-48');
 const alaskaMap = svg.select('#alaska');
 const hawaiiMap = svg.select('#hawaii');
@@ -57,6 +58,7 @@ async function render(year) {
 
   // load the map
   const map = await d3.json(`us_state_${fileYear}.topojson`);
+
   const allStates = topojson.feature(map, map.objects[`us_state_${fileYear}`])
     .features
     .sort((a, b) => {
@@ -84,9 +86,6 @@ async function render(year) {
         .classed('small', d => smallestStates.includes(d.properties.name))
         .classed('largest', d => d.properties.name === largestState)
         .attr('d', lower48PathGenerator)
-        .on('click', (e, d) => console.log(d.properties.name, d.properties[`pop_${year}`]))
-        .append('title')
-        .text(d => d.properties.name);
       },
       update => {
         update
@@ -94,15 +93,39 @@ async function render(year) {
         .classed('small', d => smallestStates.includes(d.properties.name))
         .classed('largest', d => d.properties.name === largestState)
         .attr('d', lower48PathGenerator)
-        .on('click', null)
-        .on('click', (e, d) => console.log(d.properties.name, d.properties[`pop_${year}`]))
-        .append('title')
-        .text(d => d.properties.name);
       },
       exit => {
         exit.on('click', null).remove();
       }
     );
+
+
+  // create the overlay of the lower 48
+  lower48Map.selectAll('path.state.overlay')
+  .data(lower48States, d => d.properties.GISJOIN)
+  .join(
+    enter => {
+      enter
+      .insert('path')
+      .attr('class', 'state overlay')
+      .attr('d', lower48PathGenerator)
+      .on('click', (e, d) => console.log(d.properties.GISJOIN, d.properties.name, d.properties[`pop_${year}`]))
+      .append('title')
+      .text(d => d.properties.name);
+    },
+    update => {
+      update
+      .attr('class', 'state overlay')
+      .attr('d', lower48PathGenerator)
+      .on('click', null)
+      .on('click', (e, d) => console.log(d.properties.GISJOIN, d.properties.name, d.properties[`pop_${year}`]))
+      .append('title')
+      .text(d => d.properties.name);
+    },
+    exit => {
+      exit.on('click', null).remove();
+    }
+  );
 
   if(alaska.length > 0) {
     // push the continental US over if Alaska is present
@@ -114,22 +137,22 @@ async function render(year) {
       enter => {
         enter
         .insert('path')
-        .attr('class', 'state')
+        .attr('class', 'state single')
         .classed('small', d => smallestStates.includes(d.properties.name))
         .classed('largest', d => d.properties.name === largestState)
         .attr('d', alaskaPathGenerator)
-        .on('click', (e, d) => console.log(d.properties.name, d.properties[`pop_${year}`]))
+        .on('click', (e, d) => console.log(d.properties.GISJOIN, d.properties.name, d.properties[`pop_${year}`]))
         .append('title')
         .text(d => d.properties.name);
       },
       update => {
         update
-        .attr('class', 'state')
+        .attr('class', 'state single')
         .classed('small', d => smallestStates.includes(d.properties.name))
         .classed('largest', d => d.properties.name === largestState)
         .attr('d', alaskaPathGenerator)
         .on('click', null)
-        .on('click', (e, d) => console.log(d.properties.name, d.properties[`pop_${year}`]))
+        .on('click', (e, d) => console.log(d.properties.GISJOIN, d.properties.name, d.properties[`pop_${year}`]))
         .append('title')
         .text(d => d.properties.name);
       }
@@ -146,22 +169,22 @@ async function render(year) {
       enter => {
         enter
         .insert('path')
-        .attr('class', 'state')
+        .attr('class', 'state single')
         .classed('small', d => smallestStates.includes(d.properties.name))
         .classed('largest', d => d.properties.name === largestState)
         .attr('d', hawaiiPathGenerator)
-        .on('click', (e, d) => console.log(d.properties.name, d.properties[`pop_${year}`]))
+        .on('click', (e, d) => console.log(d.properties.GISJOIN, d.properties.name, d.properties[`pop_${year}`]))
         .append('title')
         .text(d => d.properties.name);
       },
       update => {
         update
-        .attr('class', 'state')
+        .attr('class', 'state single')
         .classed('small', d => smallestStates.includes(d.properties.name))
         .classed('largest', d => d.properties.name === largestState)
         .attr('d', hawaiiPathGenerator)
         .on('click', null)
-        .on('click', (e, d) => console.log(d.properties.name, d.properties[`pop_${year}`]))
+        .on('click', (e, d) => console.log(d.properties.GISJOIN, d.properties.name, d.properties[`pop_${year}`]))
         .append('title')
         .text(d => d.properties.name);
       }
@@ -177,22 +200,22 @@ async function render(year) {
       enter => {
         enter
         .insert('path')
-        .attr('class', 'state')
+        .attr('class', 'state single')
         .classed('small', d => smallestStates.includes(d.properties.name))
         .classed('largest', d => d.properties.name === largestState)
         .attr('d', prPathGenerator)
-        .on('click', (e, d) => console.log(d.properties.name, d.properties[`pop_${year}`]))
+        .on('click', (e, d) => console.log(d.properties.GISJOIN, d.properties.name, d.properties[`pop_${year}`]))
         .append('title')
         .text(d => d.properties.name);
       },
       update => {
         update
-        .attr('class', 'state')
+        .attr('class', 'state single')
         .classed('small', d => smallestStates.includes(d.properties.name))
         .classed('largest', d => d.properties.name === largestState)
         .attr('d', prPathGenerator)
         .on('click', null)
-        .on('click', (e, d) => console.log(d.properties.name, d.properties[`pop_${year}`]))
+        .on('click', (e, d) => console.log(d.properties.GISJOIN, d.properties.name, d.properties[`pop_${year}`]))
         .append('title')
         .text(d => d.properties.name);
       }

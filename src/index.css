@@ -3,14 +3,26 @@ html, body {
   padding: 0;
 }
 
+path.land {
+  stroke: #000;
+  stroke-width: 2;
+}
+
 path.state {
   fill: #fff;
   stroke: #000;
   stroke-width: 1;
 }
 
-path.state:hover {
-  filter: url(#inset-shadow);
+path.state.overlay {
+  fill: transparent;
+  stroke: none;
+}
+
+path.state.single:hover,
+path.state.overlay:hover {
+  stroke-width: 2;
+  stroke:#000;
 }
 
 path.state.largest {

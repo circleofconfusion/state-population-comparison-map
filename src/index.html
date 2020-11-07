@@ -11,26 +11,6 @@
   <main>
     <div id="map">
       <svg>
-        <defs>
-          <filter id="inset-shadow" width="200%" height="200%">
-            <!-- Shadow Offset -->
-            <feOffset dx="0" dy="0" />
-            <!-- Shadow Blur -->
-            <feGaussianBlur stdDeviation="2"  result="offset-blur" />
-            <!-- Invert the drop shadow to create an inner shadow -->
-            <feComposite operator="out" in="SourceGraphic" result="inverse" />
-            <!-- Color & Opacity -->
-            <feFlood flood-color="black" flood-opacity="1" result="color" />
-            <!-- Clip color inside shadow -->
-            <feComposite operator="in" in="color" in2="inverse" result="shadow" />
-            <!-- Shadow Opacity -->
-            <feComponentTransfer in="shadow" result="shadow">
-              <feFuncA type="linear" slope="1" />
-            </feComponentTransfer>
-            <!-- Put shadow over original object -->
-            <!--<feComposite operator="over" in="shadow" in2="SourceGraphic"/>-->
-          </filter>
-        </defs>
         <g id="alaska" transform="translate(-180, -70)"></g>
         <g id="hawaii" transform="translate(-310, 10)"></g>
         <g id="puerto-rico" transform="translate(-200, 10)"></g>
